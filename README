@@ -1,0 +1,9 @@
+These scripts include functions for reading output files of EPP and Spectrum software.
+
+Country estimates files are available from UNAIDS: http://apps.unaids.org/spectrum/
+
+The functions are created for reading output files Spectrum version 5.0 (2014 round of UNAIDS estimates).
+
+The functions are not particularly well tested. If you see something funny, investigate it (and let me know!).
+
+Created by Jeff Eaton on 2014-11-16. <jeffrey.eaton@imperial.ac.uk>
