@@ -16,7 +16,7 @@ read.epp.input <- function(ep.path){
     start.year <- as.integer(read.csv(text=ep1[firstprojyr.idx], header=FALSE)[2])
     stop.year <- as.integer(read.csv(text=ep1[lastprojyr.idx], header=FALSE)[2])
     epp.pop <- setNames(read.csv(text=ep1[popstart.idx:popend.idx], header=FALSE, as.is=TRUE),
-                        c("year", "pop15to49", "age15enter", "age50exit", "netmigr"))
+                        c("year", "pop15to49", "pop15", "pop50", "netmigr"))
 
     ## ep4
     ep4 <- scan(paste(ep.path, ".ep4", sep=""), "character", sep="\n")
@@ -69,8 +69,8 @@ read.epp.data <- function(epp.xml){
   obj <- xmlTreeParse(epp.xml)
 
   r <- xmlRoot(obj)[[1]]
-  eppSetChildren.idx <- which(sapply(xmlChildren(r), xmlAttrs) == "eppSetChildren")
-  country <- xmlToList(r[[which(sapply(xmlChildren(r), xmlAttrs) == "worksetCountry")]][[1]])
+  eppSetChildren.idx <- which(xmlSApply(r, xmlAttrs) == "eppSetChildren")
+  country <- xmlToList(r[[which(xmlSApply(r, xmlAttrs) == "worksetCountry")]][[1]])
   
   epp.data <- list() # declare list to store output
   attr(epp.data, "country") <- country
@@ -97,7 +97,7 @@ read.epp.data <- function(epp.xml){
     ## ANC prevalence
     anc.prev <- matrix(NA, nsites, nANCyears)
     rownames(anc.prev) <- siteNames
-    colnames(anc.prev) <- 1985+1:nANCyears
+    colnames(anc.prev) <- 1985+0:(nANCyears-1)
     for(clinic.idx in 1:nsites){
       clinic <- eppSet[[survData.idx]][["array"]][[clinic.idx]][[1]]
       prev <- as.numeric(xmlSApply(clinic, xmlSApply, xmlToList, FALSE))
@@ -111,7 +111,7 @@ read.epp.data <- function(epp.xml){
     ## ANC sample sizes
     anc.n <- matrix(NA, nsites, nANCyears)
     rownames(anc.n) <- siteNames
-    colnames(anc.n) <- 1985+1:nANCyears
+    colnames(anc.n) <- 1985+0:(nANCyears-1)
     for(clinic.idx in 1:nsites){
       clinic <- eppSet[[survSampleSizes.idx]][["array"]][[clinic.idx]][[1]]
       n <- as.numeric(xmlSApply(clinic, xmlSApply, xmlToList, FALSE))
