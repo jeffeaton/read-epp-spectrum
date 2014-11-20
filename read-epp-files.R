@@ -157,6 +157,68 @@ read.epp.data <- function(epp.xml){
 }
 
 
+################################################################################
+####  Function to read subpopulation sizes used in EPP fitting (from .xml)  ####
+################################################################################
+
+read.epp.subpops <- function(epp.xml){
+
+    obj <- xmlTreeParse(epp.xml)
+    r <- xmlRoot(obj)[[1]]
+    eppSetChildren.idx <- which(xmlSApply(r, xmlAttrs) == "eppSetChildren")
+    country <- xmlToList(r[[which(xmlSApply(r, xmlAttrs) == "worksetCountry")]][[1]])
+    
+    epp.pops <- list() # declare list to store output
+    attr(epp.pops, "country") <- country
+    
+    workset.startyear <- as.integer(xmlToList(r[[which(xmlSApply(r, xmlAttrs) == "worksetStartYear")]][[1]]))
+    workset.endyear <- as.integer(xmlToList(r[[which(xmlSApply(r, xmlAttrs) == "worksetEndYear")]][[1]]))
+    ## workset.popbaseyear <- as.integer(xmlToList(r[[which(xmlSApply(r, xmlAttrs) == "worksetPopBaseYear")]][[1]])) # not sure what this is...
+    
+    pop15to49.idx <- which(xmlSApply(r, xmlAttrs) == "pop15to49")
+    pop15.idx <- which(xmlSApply(r, xmlAttrs) == "pop15")
+    pop50.idx <- which(xmlSApply(r, xmlAttrs) == "pop50")
+    netMigration.idx <- which(xmlSApply(r, xmlAttrs) == "netMigration")
+    
+    epp.pops$total <-  data.frame(year = workset.startyear:workset.endyear,
+                                  pop15to49 = 0,
+                                  pop15 = 0,
+                                  pop50 = 0,
+                                  netmigr = 0)
+    epp.pops$total$pop15to49[as.integer(xmlSApply(r[[pop15to49.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(r[[pop15to49.idx]][[1]], xmlSApply, xmlToList))
+    epp.pops$total$pop15[as.integer(xmlSApply(r[[pop15.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(r[[pop15.idx]][[1]], xmlSApply, xmlToList))
+    epp.pops$total$pop50[as.integer(xmlSApply(r[[pop50.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(r[[pop50.idx]][[1]], xmlSApply, xmlToList))
+    epp.pops$total$netmigr[as.integer(xmlSApply(r[[netMigration.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(r[[netMigration.idx]][[1]], xmlSApply, xmlToList))
+
+    epp.pops$subpops <- list()
+
+    for(eppSet.idx in 1:xmlSize(r[[eppSetChildren.idx]])){
+        
+        eppSet <- r[[eppSetChildren.idx]][[eppSet.idx]][[1]]
+        eppName <- xmlToList(eppSet[[which(xmlSApply(eppSet, xmlAttrs) == "name")]][["string"]])
+        
+        pop15to49.idx <- which(xmlSApply(eppSet, xmlAttrs) == "pop15to49")
+        pop15.idx <- which(xmlSApply(eppSet, xmlAttrs) == "pop15")
+        pop50.idx <- which(xmlSApply(eppSet, xmlAttrs) == "pop50")
+        netMigration.idx <- which(xmlSApply(eppSet, xmlAttrs) == "netMigration")
+
+        subp <- data.frame(year = workset.startyear:workset.endyear,
+                           pop15to49 = 0,
+                           pop15 = 0,
+                           pop50 = 0,
+                           netmigr = 0)
+        subp$pop15to49[as.integer(xmlSApply(eppSet[[pop15to49.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(eppSet[[pop15to49.idx]][[1]], xmlSApply, xmlToList))
+        subp$pop15[as.integer(xmlSApply(eppSet[[pop15.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(eppSet[[pop15.idx]][[1]], xmlSApply, xmlToList))
+        subp$pop50[as.integer(xmlSApply(eppSet[[pop50.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(eppSet[[pop50.idx]][[1]], xmlSApply, xmlToList))
+        subp$netmigr[as.integer(xmlSApply(eppSet[[netMigration.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(eppSet[[netMigration.idx]][[1]], xmlSApply, xmlToList))
+        
+        epp.pops$subpops[[eppName]] <- subp
+    }
+
+    return(epp.pops)
+}
+
+
 ###################
 ####  Example  ####
 ###################
@@ -164,3 +226,4 @@ read.epp.data <- function(epp.xml){
 ## sa.path <- "~/Documents/Data/Spectrum files/2014, final (downloaded 8 October 2014)/South Africa 2014/SouthAfrica_p_2014June10-H-c"
 ## sa.epp.input <- read.epp.input(sa.path)
 ## sa.eppd <- read.epp.data(paste(sa.path, ".xml", sep=""))
+## sa.eppsubp <- read.epp.subpops(paste(sa.path, ".xml", sep=""))
