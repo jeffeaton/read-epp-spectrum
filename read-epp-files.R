@@ -5,46 +5,46 @@
 
 read.epp.input <- function(ep.path){
 
-    ## ep1
-    ep1 <- scan(paste(ep.path, ".ep1", sep=""), "character", sep="\n")
+  ## ep1
+  ep1 <- scan(paste(ep.path, ".ep1", sep=""), "character", sep="\n")
 
-    firstprojyr.idx <-  which(sapply(ep1, substr, 1, 11) == "FIRSTPROJYR")
-    lastprojyr.idx <-  which(sapply(ep1, substr, 1, 10) == "LASTPROJYR")
-    popstart.idx <- which(ep1 == "POPSTART")+1
-    popend.idx <- which(ep1 == "POPEND")-1
-    
-    start.year <- as.integer(read.csv(text=ep1[firstprojyr.idx], header=FALSE)[2])
-    stop.year <- as.integer(read.csv(text=ep1[lastprojyr.idx], header=FALSE)[2])
-    epp.pop <- setNames(read.csv(text=ep1[popstart.idx:popend.idx], header=FALSE, as.is=TRUE),
-                        c("year", "pop15to49", "pop15", "pop50", "netmigr"))
+  firstprojyr.idx <-  which(sapply(ep1, substr, 1, 11) == "FIRSTPROJYR")
+  lastprojyr.idx <-  which(sapply(ep1, substr, 1, 10) == "LASTPROJYR")
+  popstart.idx <- which(ep1 == "POPSTART")+1
+  popend.idx <- which(ep1 == "POPEND")-1
 
-    ## ep4
-    ep4 <- scan(paste(ep.path, ".ep4", sep=""), "character", sep="\n")
+  start.year <- as.integer(read.csv(text=ep1[firstprojyr.idx], header=FALSE)[2])
+  stop.year <- as.integer(read.csv(text=ep1[lastprojyr.idx], header=FALSE)[2])
+  epp.pop <- setNames(read.csv(text=ep1[popstart.idx:popend.idx], header=FALSE, as.is=TRUE),
+                      c("year", "pop15to49", "pop15", "pop50", "netmigr"))
 
-    cd4lim.idx <- which(sapply(ep4, substr, 1, 12) == "CD4LOWLIMITS")
-    lambda.idx <- which(sapply(ep4, substr, 1, 6) == "LAMBDA")
-    cd4init.idx <- which(sapply(ep4, substr, 1, 13) == "NEWINFECTSCD4")
-    mu.idx <- which(sapply(ep4, substr, 1, 3) == "MU_")
-    alpha1.idx <- which(sapply(ep4, substr, 1, 6) == "ALPHA1")
-    alpha2.idx <- which(sapply(ep4, substr, 1, 6) == "ALPHA2")
-    alpha3.idx <- which(sapply(ep4, substr, 1, 6) == "ALPHA3")
-    infectreduc.idx <- which(sapply(ep4, substr, 1, 11) == "INFECTREDUC")
-    artstart.idx <- which(ep4 == "ARTSTART")+1
-    artend.idx <- which(ep4 == "ARTEND")-1
+  ## ep4
+  ep4 <- scan(paste(ep.path, ".ep4", sep=""), "character", sep="\n")
 
-    cd4lim <- as.integer(read.csv(text=ep4[cd4lim.idx], header=FALSE)[-1])
-    cd4init <- as.matrix(read.csv(text=ep4[cd4init.idx], header=FALSE, row.names=1))
-    lambda <- as.matrix(read.csv(text=ep4[lambda.idx], header=FALSE, row.names=1))
-    mu <- as.matrix(read.csv(text=ep4[mu.idx], header=FALSE, row.names=1))
-    alpha1 <- as.matrix(read.csv(text=ep4[alpha1.idx], header=FALSE, row.names=1))
-    alpha2 <- as.matrix(read.csv(text=ep4[alpha2.idx], header=FALSE, row.names=1))
-    alpha3 <- as.matrix(read.csv(text=ep4[alpha3.idx], header=FALSE, row.names=1))
-    infectreduc <- as.numeric(read.csv(text=ep4[infectreduc.idx], header=FALSE)[2])
-    
-    epp.art <- setNames(read.csv(text=ep4[artstart.idx:artend.idx], header=FALSE, as.is=TRUE),
-                        c("year", "m.isperc", "m.val", "f.isperc", "f.val", "cd4thresh", "m.perc50plus", "f.perc50plus", "perc50plus", ""))
+  cd4lim.idx <- which(sapply(ep4, substr, 1, 12) == "CD4LOWLIMITS")
+  lambda.idx <- which(sapply(ep4, substr, 1, 6) == "LAMBDA")
+  cd4init.idx <- which(sapply(ep4, substr, 1, 13) == "NEWINFECTSCD4")
+  mu.idx <- which(sapply(ep4, substr, 1, 3) == "MU_")
+  alpha1.idx <- which(sapply(ep4, substr, 1, 6) == "ALPHA1")
+  alpha2.idx <- which(sapply(ep4, substr, 1, 6) == "ALPHA2")
+  alpha3.idx <- which(sapply(ep4, substr, 1, 6) == "ALPHA3")
+  infectreduc.idx <- which(sapply(ep4, substr, 1, 11) == "INFECTREDUC")
+  artstart.idx <- which(ep4 == "ARTSTART")+1
+  artend.idx <- which(ep4 == "ARTEND")-1
 
-    return(list(start.year       = start.year,
+  cd4lim <- as.integer(read.csv(text=ep4[cd4lim.idx], header=FALSE)[-1])
+  cd4init <- as.matrix(read.csv(text=ep4[cd4init.idx], header=FALSE, row.names=1))
+  lambda <- as.matrix(read.csv(text=ep4[lambda.idx], header=FALSE, row.names=1))
+  mu <- as.matrix(read.csv(text=ep4[mu.idx], header=FALSE, row.names=1))
+  alpha1 <- as.matrix(read.csv(text=ep4[alpha1.idx], header=FALSE, row.names=1))
+  alpha2 <- as.matrix(read.csv(text=ep4[alpha2.idx], header=FALSE, row.names=1))
+  alpha3 <- as.matrix(read.csv(text=ep4[alpha3.idx], header=FALSE, row.names=1))
+  infectreduc <- as.numeric(read.csv(text=ep4[infectreduc.idx], header=FALSE)[2])
+
+  epp.art <- setNames(read.csv(text=ep4[artstart.idx:artend.idx], header=FALSE, as.is=TRUE),
+                      c("year", "m.isperc", "m.val", "f.isperc", "f.val", "cd4thresh", "m.perc50plus", "f.perc50plus", "perc50plus", ""))
+
+  eppin <- list(start.year       = start.year,
                 stop.year        = stop.year,
                 epp.pop          = epp.pop,
                 cd4lowlim        = cd4lim,
@@ -55,7 +55,10 @@ read.epp.input <- function(ep.path){
                 artmort.6to12mos = alpha2,
                 artmort.after1yr = alpha3,
                 infectreduc      = infectreduc,
-                epp.art          = epp.art))
+                epp.art          = epp.art)
+  class(eppin) <- "eppin"
+
+  return(eppin)
 }
 
 
@@ -71,7 +74,7 @@ read.epp.data <- function(epp.xml){
   r <- xmlRoot(obj)[[1]]
   eppSetChildren.idx <- which(xmlSApply(r, xmlAttrs) == "eppSetChildren")
   country <- xmlToList(r[[which(xmlSApply(r, xmlAttrs) == "worksetCountry")]][[1]])
-  
+
   epp.data <- list() # declare list to store output
   attr(epp.data, "country") <- country
 
@@ -103,7 +106,7 @@ read.epp.data <- function(epp.xml){
       prev <- as.numeric(xmlSApply(clinic, xmlSApply, xmlToList, FALSE))
       idx <- as.integer(xmlSApply(clinic, xmlAttrs)) + 1
       anc.prev[clinic.idx, idx] <- prev
-  }
+    }
     anc.prev[is.na(anc.prev)] <- 0.0 ## NOTE: appears that if value is 0.0, the array index is omitted from XML file, might apply elsewhere.
     anc.prev[anc.prev == -1] <- NA
     anc.prev <- anc.prev/100
@@ -144,7 +147,7 @@ read.epp.data <- function(epp.xml){
     hhs$used[as.integer(xmlSApply(eppSet[[hhsUsed.idx]][[1]], xmlAttrs))+1] <- as.logical(xmlSApply(eppSet[[hhsUsed.idx]][[1]], xmlSApply, xmlToList, FALSE))
 
     hhs <- subset(hhs, !is.na(prev))
-    
+
     epp.data[[eppName]] <- list(country=country,
                                 region=eppName,
                                 anc.used=anc.used,
@@ -152,6 +155,8 @@ read.epp.data <- function(epp.xml){
                                 anc.n=anc.n,
                                 hhs=hhs)
   }
+
+  class(epp.data) <- "eppd"
 
   return(epp.data)
 }
@@ -163,59 +168,61 @@ read.epp.data <- function(epp.xml){
 
 read.epp.subpops <- function(epp.xml){
 
-    obj <- xmlTreeParse(epp.xml)
-    r <- xmlRoot(obj)[[1]]
-    eppSetChildren.idx <- which(xmlSApply(r, xmlAttrs) == "eppSetChildren")
-    country <- xmlToList(r[[which(xmlSApply(r, xmlAttrs) == "worksetCountry")]][[1]])
-    
-    epp.pops <- list() # declare list to store output
-    attr(epp.pops, "country") <- country
-    
-    workset.startyear <- as.integer(xmlToList(r[[which(xmlSApply(r, xmlAttrs) == "worksetStartYear")]][[1]]))
-    workset.endyear <- as.integer(xmlToList(r[[which(xmlSApply(r, xmlAttrs) == "worksetEndYear")]][[1]]))
-    ## workset.popbaseyear <- as.integer(xmlToList(r[[which(xmlSApply(r, xmlAttrs) == "worksetPopBaseYear")]][[1]])) # not sure what this is...
-    
-    pop15to49.idx <- which(xmlSApply(r, xmlAttrs) == "pop15to49")
-    pop15.idx <- which(xmlSApply(r, xmlAttrs) == "pop15")
-    pop50.idx <- which(xmlSApply(r, xmlAttrs) == "pop50")
-    netMigration.idx <- which(xmlSApply(r, xmlAttrs) == "netMigration")
-    
-    epp.pops$total <-  data.frame(year = workset.startyear:workset.endyear,
-                                  pop15to49 = 0,
-                                  pop15 = 0,
-                                  pop50 = 0,
-                                  netmigr = 0)
-    epp.pops$total$pop15to49[as.integer(xmlSApply(r[[pop15to49.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(r[[pop15to49.idx]][[1]], xmlSApply, xmlToList))
-    epp.pops$total$pop15[as.integer(xmlSApply(r[[pop15.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(r[[pop15.idx]][[1]], xmlSApply, xmlToList))
-    epp.pops$total$pop50[as.integer(xmlSApply(r[[pop50.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(r[[pop50.idx]][[1]], xmlSApply, xmlToList))
-    epp.pops$total$netmigr[as.integer(xmlSApply(r[[netMigration.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(r[[netMigration.idx]][[1]], xmlSApply, xmlToList))
+  obj <- xmlTreeParse(epp.xml)
+  r <- xmlRoot(obj)[[1]]
+  eppSetChildren.idx <- which(xmlSApply(r, xmlAttrs) == "eppSetChildren")
+  country <- xmlToList(r[[which(xmlSApply(r, xmlAttrs) == "worksetCountry")]][[1]])
 
-    epp.pops$subpops <- list()
+  epp.pops <- list() # declare list to store output
+  attr(epp.pops, "country") <- country
 
-    for(eppSet.idx in 1:xmlSize(r[[eppSetChildren.idx]])){
-        
-        eppSet <- r[[eppSetChildren.idx]][[eppSet.idx]][[1]]
-        eppName <- xmlToList(eppSet[[which(xmlSApply(eppSet, xmlAttrs) == "name")]][["string"]])
-        
-        pop15to49.idx <- which(xmlSApply(eppSet, xmlAttrs) == "pop15to49")
-        pop15.idx <- which(xmlSApply(eppSet, xmlAttrs) == "pop15")
-        pop50.idx <- which(xmlSApply(eppSet, xmlAttrs) == "pop50")
-        netMigration.idx <- which(xmlSApply(eppSet, xmlAttrs) == "netMigration")
+  workset.startyear <- as.integer(xmlToList(r[[which(xmlSApply(r, xmlAttrs) == "worksetStartYear")]][[1]]))
+  workset.endyear <- as.integer(xmlToList(r[[which(xmlSApply(r, xmlAttrs) == "worksetEndYear")]][[1]]))
+  ## workset.popbaseyear <- as.integer(xmlToList(r[[which(xmlSApply(r, xmlAttrs) == "worksetPopBaseYear")]][[1]])) # not sure what this is...
 
-        subp <- data.frame(year = workset.startyear:workset.endyear,
-                           pop15to49 = 0,
-                           pop15 = 0,
-                           pop50 = 0,
-                           netmigr = 0)
-        subp$pop15to49[as.integer(xmlSApply(eppSet[[pop15to49.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(eppSet[[pop15to49.idx]][[1]], xmlSApply, xmlToList))
-        subp$pop15[as.integer(xmlSApply(eppSet[[pop15.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(eppSet[[pop15.idx]][[1]], xmlSApply, xmlToList))
-        subp$pop50[as.integer(xmlSApply(eppSet[[pop50.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(eppSet[[pop50.idx]][[1]], xmlSApply, xmlToList))
-        subp$netmigr[as.integer(xmlSApply(eppSet[[netMigration.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(eppSet[[netMigration.idx]][[1]], xmlSApply, xmlToList))
-        
-        epp.pops$subpops[[eppName]] <- subp
-    }
+  pop15to49.idx <- which(xmlSApply(r, xmlAttrs) == "pop15to49")
+  pop15.idx <- which(xmlSApply(r, xmlAttrs) == "pop15")
+  pop50.idx <- which(xmlSApply(r, xmlAttrs) == "pop50")
+  netMigration.idx <- which(xmlSApply(r, xmlAttrs) == "netMigration")
 
-    return(epp.pops)
+  epp.pops$total <-  data.frame(year = workset.startyear:workset.endyear,
+                                pop15to49 = 0,
+                                pop15 = 0,
+                                pop50 = 0,
+                                netmigr = 0)
+  epp.pops$total$pop15to49[as.integer(xmlSApply(r[[pop15to49.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(r[[pop15to49.idx]][[1]], xmlSApply, xmlToList))
+  epp.pops$total$pop15[as.integer(xmlSApply(r[[pop15.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(r[[pop15.idx]][[1]], xmlSApply, xmlToList))
+  epp.pops$total$pop50[as.integer(xmlSApply(r[[pop50.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(r[[pop50.idx]][[1]], xmlSApply, xmlToList))
+  epp.pops$total$netmigr[as.integer(xmlSApply(r[[netMigration.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(r[[netMigration.idx]][[1]], xmlSApply, xmlToList))
+
+  epp.pops$subpops <- list()
+
+  for(eppSet.idx in 1:xmlSize(r[[eppSetChildren.idx]])){
+
+    eppSet <- r[[eppSetChildren.idx]][[eppSet.idx]][[1]]
+    eppName <- xmlToList(eppSet[[which(xmlSApply(eppSet, xmlAttrs) == "name")]][["string"]])
+
+    pop15to49.idx <- which(xmlSApply(eppSet, xmlAttrs) == "pop15to49")
+    pop15.idx <- which(xmlSApply(eppSet, xmlAttrs) == "pop15")
+    pop50.idx <- which(xmlSApply(eppSet, xmlAttrs) == "pop50")
+    netMigration.idx <- which(xmlSApply(eppSet, xmlAttrs) == "netMigration")
+
+    subp <- data.frame(year = workset.startyear:workset.endyear,
+                       pop15to49 = 0,
+                       pop15 = 0,
+                       pop50 = 0,
+                       netmigr = 0)
+    subp$pop15to49[as.integer(xmlSApply(eppSet[[pop15to49.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(eppSet[[pop15to49.idx]][[1]], xmlSApply, xmlToList))
+    subp$pop15[as.integer(xmlSApply(eppSet[[pop15.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(eppSet[[pop15.idx]][[1]], xmlSApply, xmlToList))
+    subp$pop50[as.integer(xmlSApply(eppSet[[pop50.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(eppSet[[pop50.idx]][[1]], xmlSApply, xmlToList))
+    subp$netmigr[as.integer(xmlSApply(eppSet[[netMigration.idx]][[1]], xmlAttrs))+1] <- as.numeric(xmlSApply(eppSet[[netMigration.idx]][[1]], xmlSApply, xmlToList))
+
+    epp.pops$subpops[[eppName]] <- subp
+  }
+
+  class(epp.pops) <- "eppsubp"
+
+  return(epp.pops)
 }
 
 
