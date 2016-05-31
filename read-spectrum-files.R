@@ -242,6 +242,8 @@ read.demog.param <- function(upd.file, age.intervals = 5){
   asfr <- sweep(asfd, 2, tfr, "*")
   asfr <- apply(asfr, 2, tapply, age.groups[16:50], mean)
 
+  asfd <- apply(asfd, 2, tapply, age.groups[16:50], sum)
+
   ## migration
   netmigr <- array(as.numeric(migration$value), c(81, 2, 80))
   netmigr <- apply(netmigr, 2:3, tapply, age.groups, sum)
@@ -251,9 +253,10 @@ read.demog.param <- function(upd.file, age.intervals = 5){
   mx <- aperm(mx, 3:1)
   Sx <- aperm(Sx, 3:1)
   asfr <- aperm(asfr, 2:1)
+  asfd <- aperm(asfd, 2:1)
   netmigr <- aperm(netmigr, 3:1)
 
-  demp <- list("basepop"=basepop, "mx"=mx, "Sx"=Sx, "asfr"=asfr, "srb"=srb, "netmigr"=netmigr)
+  demp <- list("basepop"=basepop, "mx"=mx, "Sx"=Sx, "asfr"=asfr, "tfr"=tfr, "asfd"=asfd, "srb"=srb, "netmigr"=netmigr)
   class(demp) <- "demp"
 
   return(demp)
